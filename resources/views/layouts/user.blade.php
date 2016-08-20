@@ -25,11 +25,11 @@
 
     <header class="main-header">
         <!-- Logo -->
-        <a href="index2.html" class="logo">
+        <a href="/" class="logo">
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>A</b>M</span>
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><b>Admin</b>Manage</span>
+            <span class="logo-lg"><b>User </b>Manage</span>
         </a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top" role="navigation">
@@ -43,23 +43,23 @@
                     <!-- User Account: style can be found in dropdown.less -->
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="/dist/img/user2-160x160.jpg" class="user-image" alt="User Image">
+                            <img src="{{ auth()->user()->avartar }}" class="user-image" alt="User Image">
                             <span class="hidden-xs">{{ auth()->user()->user_name }}</span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- User image -->
                             <li class="user-header">
-                                <img src="/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                                <img src="{{ auth()->user()->avartar }}" class="img-circle" alt="User Image">
 
                                 <p>
-                                    {{ auth()->user()->user_name }} - Web Developer
+                                    {{ auth()->user()->user_name }} - {{ auth()->user()->groupName() }}
                                     <small>Member since Nov. 2012</small>
                                 </p>
                             </li>
                             <!-- Menu Footer-->
                             <li class="user-footer">
                                 <div class="pull-left">
-                                    <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                    <a href="{{ route('user.profile') }}" class="btn btn-default btn-flat">Profile</a>
                                 </div>
                                 <div class="pull-right">
                                     <a href="{{ route('user.getLogout') }}" class="btn btn-default btn-flat">Sign out</a>
@@ -78,7 +78,7 @@
             <!-- Sidebar user panel -->
             <div class="user-panel">
                 <div class="pull-left image">
-                    <img src="/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                    <img src="{{ auth()->user()->avartar }}" class="img-circle" alt="User Image">
                 </div>
                 <div class="pull-left info">
                     <p>{{ auth()->user()->user_name }}</p>

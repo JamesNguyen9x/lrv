@@ -20,12 +20,16 @@ Route::group(['prefix' => ADMIN_PREFIX, 'namespace' => 'Admin', 'middleware' => 
     Route::get('/', ['as' => 'admin', 'uses' => 'AdminController@index']);
     Route::resource('users', 'UsersController');
     Route::resource('groups', 'GroupsController');
+    Route::get('/config/overtime', ['as' => 'config.overtime', 'uses' => 'ConfigController@overtime']);
+    Route::post('/config/update-overtime', ['as' => 'config.updateOvertime', 'uses' => 'ConfigController@updateOvertime']);
 });
 //Route::group(['middleware' => ['user'], function () {
 //    Route::get('/', ['as' => 'main', 'uses' => 'MainController@index']);
 //}]);
 Route::group(['middleware' => 'user'], function () {
     Route::get('/', ['as' => 'main', 'uses' => 'MainController@index']);
+    Route::get('/user/profile', ['as' => 'user.profile', 'uses' => 'Admin\UsersController@editProfile']);
+    Route::put('/user/update-profile', ['as' => 'user.updateProfile', 'uses' => 'Admin\UsersController@updateProfile']);
 });
 
 Route::get(ADMIN_PREFIX . '/login', ['as' => 'admin.login', 'uses' => 'Admin\AdminController@getLogin']);

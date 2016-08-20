@@ -19,6 +19,7 @@
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    @yield('head')
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <div class="wrapper">
@@ -29,7 +30,7 @@
             <!-- mini logo for sidebar mini 50x50 pixels -->
             <span class="logo-mini"><b>A</b>M</span>
             <!-- logo for regular state and mobile devices -->
-            <span class="logo-lg"><b>Admin</b>Manage</span>
+            <span class="logo-lg"><b>Admin </b>Manage</span>
         </a>
         <!-- Header Navbar: style can be found in header.less -->
         <nav class="navbar navbar-static-top" role="navigation">
@@ -99,18 +100,28 @@
             <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu">
                 <li class="header">MAIN NAVIGATION</li>
-                <li class="active treeview">
+                <li class="treeview">
                     <a href="#">
                         <i class="fa fa-group"></i> <span>Manage Group</span> <i class="fa fa-angle-left pull-right"></i>
                     </a>
                     <ul class="treeview-menu">
-                        <li class="active"><a href="{{route('admin.groups.index')}}"><i class="fa fa-list-alt"></i> List Group</a></li>
+                        <li><a href="{{route('admin.groups.index')}}"><i class="fa fa-list-alt"></i> List Group</a></li>
                         <li><a href="{{route('admin.groups.create')}}"><i class="fa fa-plus-square"></i> Create Groupp</a></li>
                     </ul>
                 </li>
                 <li class="treeview">
                     <a href="#">
-                        <i class="fa  fa-user"></i>
+                        <i class="fa fa-cog"></i>
+                        <span>Config</span>
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="{{ route('config.overtime') }}"><i class="fa fa-clock-o"></i> Over Time</a></li>
+                    </ul>
+                </li>
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-user"></i>
                         <span>Manage User</span>
                         <i class="fa fa-angle-left pull-right"></i>
                     </a>
@@ -172,7 +183,6 @@
 <script src="/plugins/slimScroll/jquery.slimscroll.min.js"></script>
 
 <script src="/dist/js/app.min.js"></script>
-
-<script src="/dist/js/pages/dashboard.js"></script>
+@yield('footer')
 </body>
 </html>

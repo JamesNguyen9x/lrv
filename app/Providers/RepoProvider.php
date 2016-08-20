@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 
 use App\Model\User;
 use App\Model\Group;
+use App\Model\Overtime;
 
 class RepoProvider extends ServiceProvider
 {
@@ -29,6 +30,10 @@ class RepoProvider extends ServiceProvider
 
         $app->bind('\App\Repositories\Mail\MailInterface', function(){
             return new \App\Repositories\Mail\MailRepository;
+        });
+
+        $app->bind('\App\Repositories\Config\ConfigInterface', function(){
+            return new \App\Repositories\Config\ConfigRepository(new Overtime);
         });
     }
 }

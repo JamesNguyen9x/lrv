@@ -114,7 +114,7 @@ class UsersController extends Controller
             return view('errors.logon')->with('mess', 'You are not login !');
         }
         auth()->logout();
-        return view('auth.login');
+        return view('user.login');
     }
 
     public function active() {
@@ -140,6 +140,23 @@ class UsersController extends Controller
         try {
             $this->user->activeUser($request);
             return redirect()->route('user.login');
+        } catch (ValidateException $e) {
+            return redirect()->back()->withInput()->withErrors($e->getErrors());
+        }
+    }
+
+    public function editProfile(){
+        $data = [
+            'title' => 'User Profile',
+            'item' => auth()->user()
+        ];
+        return view('admin.users.profile', $data);
+    }
+
+    public function updateProfile(Request $request) {
+        try {
+            $this->user->updateProfile($request);
+            return redirect()->back()->with('Mess', 'Update Success');
         } catch (ValidateException $e) {
             return redirect()->back()->withInput()->withErrors($e->getErrors());
         }

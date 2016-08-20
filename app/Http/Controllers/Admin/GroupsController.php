@@ -20,7 +20,7 @@ class GroupsController extends Controller
         $this->group = $group;
     }
 
-    public function index(Request $request) {
+    public function index() {
         $items = $this->group->getAll(['*']);
         $data = [
             'title' => 'List group',

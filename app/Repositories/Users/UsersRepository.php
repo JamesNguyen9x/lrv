@@ -17,6 +17,32 @@ class UsersRepository extends BaseRepository implements UsersInterface {
         $this->model = $model;
     }
 
+    private function cryptoRandSecure($min, $max) {
+        $range = $max - $min;
+        if ($range < 1) return $min;
+        $log = ceil(log($range, 2));
+        $bytes = (int) ($log / 8) + 1;
+        $bits = (int) $log + 1;
+        $filter = (int) (1 << $bits) - 1;
+        do {
+            $rnd = hexdec(bin2hex(openssl_random_pseudo_bytes($bytes)));
+            $rnd = $rnd & $filter; // discard irrelevant bits
+        } while ($rnd >= $range);
+        return $min + $rnd;
+    }
+
+    private function getToken($length) {
+        $token = "";
+        $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        $codeAlphabet.= "abcdefghijklmnopqrstuvwxyz";
+        $codeAlphabet.= "0123456789";
+        $max = strlen($codeAlphabet) - 1;
+        for ($i=0; $i < $length; $i++) {
+            $token .= $codeAlphabet[$this->cryptoRandSecure(0, $max)];
+        }
+        return $token;
+    }
+
     public function rules($id=null) {
         return [
             'user_name' => 'required|unique:users,user_name,'.$id,
@@ -30,6 +56,13 @@ class UsersRepository extends BaseRepository implements UsersInterface {
             'token' => 'required|min:32',
             'user_name' => 'required',
             'password' => 'required|min:5|confirmed'
+        ];
+    }
+
+    public function rulesUpdateProfile() {
+        return [
+            'user_name' => 'required',
+            'password' => 'min:5|confirmed'
         ];
     }
 
@@ -55,6 +88,7 @@ class UsersRepository extends BaseRepository implements UsersInterface {
             $user->active = 0;
             $user->group_id = $request->get('group_id');
             $user->token = $this->getToken(32);
+            $user->avartar = '/img/avartar_default.jpg';
             if($user->save()) {
                 return $user;
             } else {
@@ -82,7 +116,6 @@ class UsersRepository extends BaseRepository implements UsersInterface {
     public function delete($id) {
         $user = $this->find($id);
         $user->deleted = 1;
-        $user->deleted_at = date('Y-m-d H:i:s');
         if(!$user->update()){
             throw new ExcuteException('Cant delete data!');
         }
@@ -105,31 +138,29 @@ class UsersRepository extends BaseRepository implements UsersInterface {
         }
     }
 
-    private function cryptoRandSecure($min, $max) {
-        $range = $max - $min;
-        if ($range < 1) return $min;
-        $log = ceil(log($range, 2));
-        $bytes = (int) ($log / 8) + 1;
-        $bits = (int) $log + 1;
-        $filter = (int) (1 << $bits) - 1;
-        do {
-            $rnd = hexdec(bin2hex(openssl_random_pseudo_bytes($bytes)));
-            $rnd = $rnd & $filter; // discard irrelevant bits
-        } while ($rnd >= $range);
-        return $min + $rnd;
+    public function updateProfile($request) {
+        if ($this->valid($request->all(), $this->rulesUpdateProfile())) {
+            //dd($request->all()['avartar']);
+            if(isset($request->all()['avartar'])) {
+                $avartar = $request->all()['avartar'];
+                $destinationPath = 'uploads/avartars';
+                $extension = $avartar->getClientOriginalExtension();
+                $fileName = rand(11111,99999).'.'.$extension;
+                $uploadSucess = $avartar->move($destinationPath, $fileName);
+                $urlAvar = "/uploads/avartars/".$fileName;
+            }
+            $user = $this->find(auth()->user()->id);
+            $user->user_name = $request->get('user_name');
+            $user->password = bcrypt($request->get('password'));
+            if(isset($urlAvar)) {
+                $user->avartar =  $urlAvar;
+            }
+            $user->update();
+        } else {
+            throw new ValidateException($this->getError());
+        }
     }
 
-    private function getToken($length) {
-        $token = "";
-        $codeAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        $codeAlphabet.= "abcdefghijklmnopqrstuvwxyz";
-        $codeAlphabet.= "0123456789";
-        $max = strlen($codeAlphabet) - 1;
-        for ($i=0; $i < $length; $i++) {
-            $token .= $codeAlphabet[$this->cryptoRandSecure(0, $max)];
-        }
-        return $token;
-    }
     public function massdel($request) {
         $ids = $request->get('massdel');
         if($ids){

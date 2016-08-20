@@ -24,6 +24,17 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    public function groups(){
+        return $this->belongsTo('App\Model\Group', 'group_id');
+    }
+    public function groupName(){
+        $item = $this->groups()->first(['name']);
+        if(is_null($item)){
+            return 'Nothing';
+        }
+        return $item->name;
+    }
+
     public function isAdmin()
     {
         if ($this->type == 1) {

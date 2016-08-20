@@ -69,7 +69,6 @@ class GroupRepository extends BaseRepository implements GroupInterface {
         $group = $this->find($id);
         $this->user->where('group_id', $id)->update(['group_id' => 0]);
         $group->deleted = 1;
-        $group->deleted_at = date('Y-m-d H:i:s');
         if(!$group->update()){
             DB::rollBack();
             throw new ExcuteException('Cant delete data!');
